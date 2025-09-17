@@ -75,13 +75,14 @@
         .main-container {
             display: flex;
             flex-direction: column;
-            gap: clamp(10px, 2vw, 15px);
+            gap: clamp(5px, 1vw, 10px);
             align-items: center;
-            padding: clamp(5px, 2vw, 10px);
+            padding: clamp(3px, 1vw, 8px);
             max-width: 100vw;
             width: 100%;
             min-height: 100vh;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-bottom: clamp(120px, 25vw, 200px); /* 为底部控制面板留出空间 */
         }
         
         /* 游戏容器 */
@@ -89,15 +90,16 @@
             position: relative;
             background: var(--medium-bg);
             border: clamp(2px, 0.5vw, 3px) solid var(--primary-color);
-            border-radius: clamp(15px, 3vw, 20px);
-            padding: clamp(10px, 2vw, 15px);
+            border-radius: clamp(12px, 2.5vw, 18px);
+            padding: clamp(8px, 1.5vw, 12px);
             box-shadow: 
-                0 0 clamp(20px, 3vw, 30px) rgba(0, 162, 255, 0.6),
-                inset 0 0 clamp(10px, 2vw, 15px) rgba(0, 162, 255, 0.1);
+                0 0 clamp(15px, 2.5vw, 25px) rgba(0, 162, 255, 0.6),
+                inset 0 0 clamp(8px, 1.5vw, 12px) rgba(0, 162, 255, 0.1);
             backdrop-filter: blur(10px);
-            max-width: 95vw;
+            max-width: 98vw;
             width: 100%;
             box-sizing: border-box;
+            flex-shrink: 0; /* 防止容器被压缩 */
         }
         
         /* 游戏画布 */
@@ -242,12 +244,12 @@
         .game-info {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: clamp(4px, 1vw, 8px);
-            margin-bottom: clamp(10px, 2vw, 15px);
-            padding: clamp(8px, 1.5vw, 12px);
+            gap: clamp(3px, 0.8vw, 6px);
+            margin-bottom: clamp(6px, 1.5vw, 10px);
+            padding: clamp(6px, 1.2vw, 10px);
             background: rgba(0, 162, 255, 0.1);
             border: 1px solid rgba(0, 162, 255, 0.3);
-            border-radius: clamp(8px, 2vw, 12px);
+            border-radius: clamp(6px, 1.5vw, 10px);
             font-size: clamp(8px, 2vw, 12px);
         }
         
@@ -443,34 +445,41 @@
         /* 移动端触摸控制 */
         .mobile-controls {
             position: fixed;
-            bottom: clamp(10px, 2vw, 20px);
+            bottom: clamp(5px, 1vw, 10px);
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: clamp(8px, 2vw, 15px);
+            gap: clamp(8px, 2vw, 12px);
             z-index: 1000;
-            opacity: 0.9;
-            padding: 0 clamp(5px, 1vw, 10px);
+            opacity: 0.95;
+            padding: clamp(3px, 0.5vw, 6px);
+            max-width: 95vw;
+            width: 100%;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: clamp(15px, 3vw, 20px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .mobile-dpad {
             position: relative;
-            width: clamp(100px, 20vw, 150px);
-            height: clamp(100px, 20vw, 150px);
+            width: clamp(140px, 25vw, 180px);
+            height: clamp(140px, 25vw, 180px);
         }
         
         .mobile-dpad-btn {
             position: absolute;
-            width: clamp(35px, 7vw, 50px);
-            height: clamp(35px, 7vw, 50px);
-            background: rgba(0, 162, 255, 0.8);
-            border: clamp(1px, 0.3vw, 2px) solid var(--primary-color);
-            border-radius: clamp(8px, 2vw, 12px);
+            width: clamp(50px, 10vw, 65px);
+            height: clamp(50px, 10vw, 65px);
+            background: rgba(0, 162, 255, 0.9);
+            border: clamp(2px, 0.5vw, 3px) solid var(--primary-color);
+            border-radius: clamp(12px, 3vw, 15px);
             color: white;
-            font-size: clamp(14px, 3vw, 20px);
+            font-size: clamp(18px, 4vw, 24px);
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.1s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -478,6 +487,7 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
+            box-shadow: 0 4px 15px rgba(0, 162, 255, 0.4);
         }
         
         .mobile-dpad-btn:active {
@@ -511,20 +521,29 @@
         .mobile-actions {
             display: flex;
             flex-direction: column;
-            gap: clamp(6px, 1.5vw, 10px);
+            gap: clamp(8px, 2vw, 12px);
+            align-items: center;
+        }
+        
+        .mobile-sound-controls,
+        .mobile-speed-controls,
+        .mobile-extra-controls {
+            display: flex;
+            gap: clamp(6px, 1.5vw, 8px);
+            align-items: center;
         }
         
         .mobile-action-btn {
-            width: clamp(40px, 8vw, 60px);
-            height: clamp(40px, 8vw, 60px);
-            background: rgba(255, 107, 107, 0.8);
-            border: clamp(1px, 0.3vw, 2px) solid var(--accent-color);
+            width: clamp(45px, 9vw, 65px);
+            height: clamp(45px, 9vw, 65px);
+            background: rgba(255, 107, 107, 0.9);
+            border: clamp(2px, 0.5vw, 3px) solid var(--accent-color);
             border-radius: 50%;
             color: white;
-            font-size: clamp(12px, 3vw, 16px);
+            font-size: clamp(16px, 3.5vw, 20px);
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.1s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -532,6 +551,34 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .mobile-speed-btn {
+            width: clamp(35px, 7vw, 45px);
+            height: clamp(35px, 7vw, 45px);
+            background: rgba(0, 162, 255, 0.8);
+            border: clamp(1px, 0.3vw, 2px) solid var(--primary-color);
+            border-radius: clamp(8px, 2vw, 12px);
+            color: white;
+            font-size: clamp(10px, 2.5vw, 14px);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            box-shadow: 0 3px 12px rgba(0, 162, 255, 0.3);
+        }
+        
+        .mobile-speed-btn.active {
+            background: var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 162, 255, 0.8);
+            transform: scale(1.1);
         }
         
         .mobile-action-btn:active {
@@ -765,6 +812,14 @@
             text-shadow: 
                 2px 2px 0px rgba(0,0,0,0.8),
                 4px 4px 0px rgba(0,255,64,0.4);
+            animation: pulse 0.5s steps(4) infinite;
+        }
+        
+        .yellow-text {
+            color: #ffeb3b;
+            text-shadow: 
+                2px 2px 0px rgba(0,0,0,0.8),
+                4px 4px 0px rgba(255,235,59,0.4);
             animation: pulse 0.5s steps(4) infinite;
         }
         
@@ -1058,9 +1113,19 @@
             <button class="mobile-dpad-btn down" ontouchstart="changeDirection('down')" onclick="changeDirection('down')">↓</button>
         </div>
         <div class="mobile-actions">
-            <button class="mobile-action-btn" ontouchstart="toggleSound()" onclick="toggleSound()" title="音效">🔊</button>
-            <button class="mobile-action-btn" ontouchstart="changeSpeed(0.5)" onclick="changeSpeed(0.5)" title="慢速">🐌</button>
-            <button class="mobile-action-btn" ontouchstart="changeSpeed(2)" onclick="changeSpeed(2)" title="快速">⚡</button>
+            <div class="mobile-sound-controls">
+                <button class="mobile-action-btn" ontouchstart="toggleSound()" onclick="toggleSound()" title="音效" id="mobileSoundBtn">🔊</button>
+            </div>
+            <div class="mobile-speed-controls">
+                <button class="mobile-speed-btn" ontouchstart="changeSpeed(0.5)" onclick="changeSpeed(0.5)" title="慢速">🐌</button>
+                <button class="mobile-speed-btn active" ontouchstart="changeSpeed(1)" onclick="changeSpeed(1)" title="正常">1x</button>
+                <button class="mobile-speed-btn" ontouchstart="changeSpeed(1.5)" onclick="changeSpeed(1.5)" title="快速">1.5x</button>
+                <button class="mobile-speed-btn" ontouchstart="changeSpeed(2)" onclick="changeSpeed(2)" title="极速">⚡</button>
+            </div>
+            <div class="mobile-extra-controls">
+                <button class="mobile-action-btn" ontouchstart="pauseGame()" onclick="pauseGame()" title="暂停">⏸️</button>
+                <button class="mobile-action-btn" ontouchstart="restartGame()" onclick="restartGame()" title="重新开始">🔄</button>
+            </div>
         </div>
     </div>
     
@@ -1829,12 +1894,42 @@
             gameOverElement.style.display = 'block';
         }
         
+        function pauseGame() {
+            if (!gameRunning) return;
+            
+            gamePaused = !gamePaused;
+            const pauseBtn = document.querySelector('[onclick="pauseGame()"], [ontouchstart="pauseGame()"]');
+            
+            if (gamePaused) {
+                clearInterval(gameLoop);
+                clearInterval(timeLoop);
+                if (pauseBtn) pauseBtn.textContent = '▶️';
+                
+                // 显示暂停消息
+                messageText.style.display = 'block';
+                messageText.innerHTML = '<span class="yellow-text">游戏已暂停</span><br>点击继续按钮恢复游戏';
+                messageText.style.fontSize = '16px';
+            } else {
+                gameLoop = setInterval(updateGame, gameSpeed);
+                timeLoop = setInterval(updateTime, 1000);
+                if (pauseBtn) pauseBtn.textContent = '⏸️';
+                
+                // 隐藏暂停消息
+                messageText.style.display = 'none';
+            }
+        }
+        
         function restartGame() {
             gameOverElement.style.display = 'none';
             gameRunning = true;
+            gamePaused = false;
             initializeGame();
             gameLoop = setInterval(updateGame, gameSpeed);
             timeLoop = setInterval(updateTime, 1000);
+            
+            // 重置暂停按钮
+            const pauseBtn = document.querySelector('[onclick="pauseGame()"], [ontouchstart="pauseGame()"]');
+            if (pauseBtn) pauseBtn.textContent = '⏸️';
         }
         
         function saveScore() {
