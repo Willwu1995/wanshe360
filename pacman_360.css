@@ -1,0 +1,448 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Orbitron', monospace;
+    overflow: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+    animation: backgroundShift 10s ease-in-out infinite alternate;
+    z-index: -1;
+}
+
+@keyframes backgroundShift {
+    0% { transform: rotate(0deg) scale(1); }
+    100% { transform: rotate(5deg) scale(1.1); }
+}
+
+.game-container {
+    position: relative;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 
+        0 0 50px rgba(0, 162, 255, 0.5),
+        inset 0 0 20px rgba(0, 162, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(0, 162, 255, 0.3);
+}
+
+#gameCanvas {
+    border: 3px solid #00a2ff;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #0a0a0a 0%, #1a1a1a 100%);
+    box-shadow: 
+        0 0 30px rgba(0, 162, 255, 0.4),
+        inset 0 0 20px rgba(0, 162, 255, 0.1);
+}
+
+.startup-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    border-radius: 20px;
+}
+
+.logo-container {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.logo {
+    font-size: 80px;
+    font-weight: 900;
+    background: linear-gradient(45deg, #00a2ff, #00ff88, #ff0088, #ffaa00);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: 
+        logoGlow 3s ease-in-out infinite,
+        logoRotate 10s linear infinite,
+        gradientShift 4s ease-in-out infinite;
+    text-shadow: 
+        0 0 30px rgba(0, 162, 255, 0.8),
+        0 0 60px rgba(0, 162, 255, 0.4);
+}
+
+.logo-subtitle {
+    font-size: 24px;
+    color: #00a2ff;
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgba(0, 162, 255, 0.8);
+    opacity: 0;
+    animation: fadeInUp 2s ease-out 1s forwards;
+}
+
+@keyframes logoGlow {
+    0%, 100% { 
+        text-shadow: 
+            0 0 30px rgba(0, 162, 255, 0.8),
+            0 0 60px rgba(0, 162, 255, 0.4);
+    }
+    50% { 
+        text-shadow: 
+            0 0 50px rgba(0, 162, 255, 1),
+            0 0 80px rgba(0, 162, 255, 0.6);
+    }
+}
+
+@keyframes logoRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes fadeInUp {
+    0% { 
+        opacity: 0; 
+        transform: translateY(30px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.start-button {
+    padding: 20px 40px;
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00a2ff, #00ff88);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 
+        0 5px 15px rgba(0, 162, 255, 0.4),
+        inset 0 0 10px rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.start-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.start-button:hover::before {
+    left: 100%;
+}
+
+.start-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 10px 25px rgba(0, 162, 255, 0.6),
+        inset 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.start-button:active {
+    transform: translateY(-1px);
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(0, 162, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 162, 255, 0.3);
+}
+
+.score {
+    color: #00ff88;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+}
+
+.level {
+    color: #ff6b6b;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.8);
+}
+
+.time {
+    color: #ffaa00;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255, 170, 0, 0.8);
+}
+
+.effect-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+    border-radius: 20px;
+}
+
+.message-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 42px;
+    font-weight: 900;
+    z-index: 200;
+    display: none;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    line-height: 1.4;
+}
+
+.lightning {
+    background: linear-gradient(45deg, #fff, #ffeb3b);
+    animation: flash 0.1s infinite;
+}
+
+.storm {
+    background: linear-gradient(45deg, #37474f, #546e7a);
+    animation: shake 0.3s infinite;
+}
+
+.celebration {
+    background: linear-gradient(45deg, #ff9800, #ffc107);
+    animation: celebrate 0.8s infinite;
+}
+
+.trash {
+    background: linear-gradient(45deg, #424242, #616161);
+}
+
+@keyframes flash {
+    0%, 100% { 
+        opacity: 0.2; 
+        background: linear-gradient(45deg, #fff, #ffeb3b);
+    }
+    50% { 
+        opacity: 1; 
+        background: linear-gradient(45deg, #ffffff, #fff59d);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    10% { transform: translateX(-8px) rotate(-1deg); }
+    20% { transform: translateX(8px) rotate(1deg); }
+    30% { transform: translateX(-6px) rotate(-0.5deg); }
+    40% { transform: translateX(6px) rotate(0.5deg); }
+    50% { transform: translateX(-4px) rotate(-0.3deg); }
+    60% { transform: translateX(4px) rotate(0.3deg); }
+    70% { transform: translateX(-2px) rotate(-0.1deg); }
+    80% { transform: translateX(2px) rotate(0.1deg); }
+    90% { transform: translateX(-1px) rotate(-0.05deg); }
+}
+
+@keyframes celebrate {
+    0%, 100% { 
+        transform: translateX(0) rotate(0deg) scale(1);
+        filter: hue-rotate(0deg);
+    }
+    25% { 
+        transform: translateX(-3px) rotate(-2deg) scale(1.05);
+        filter: hue-rotate(90deg);
+    }
+    50% { 
+        transform: translateX(3px) rotate(2deg) scale(1.1);
+        filter: hue-rotate(180deg);
+    }
+    75% { 
+        transform: translateX(-2px) rotate(-1deg) scale(1.05);
+        filter: hue-rotate(270deg);
+    }
+}
+
+.red-text {
+    color: #ff0040;
+    text-shadow: 
+        3px 3px 6px rgba(0,0,0,0.9), 
+        0 0 20px rgba(255,0,64,0.8),
+        0 0 40px rgba(255,0,64,0.4);
+    animation: pulse 0.5s infinite;
+}
+
+.green-text {
+    color: #00ff40;
+    text-shadow: 
+        3px 3px 6px rgba(0,0,0,0.9), 
+        0 0 20px rgba(0,255,64,0.8),
+        0 0 40px rgba(0,255,64,0.4);
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.rain-particle {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, #4fc3f7);
+    animation: rainfall 1s linear infinite;
+}
+
+.lightning-bolt {
+    position: absolute;
+    width: 3px;
+    background: linear-gradient(to bottom, #fff, #ffeb3b);
+    animation: lightning-strike 0.3s ease-out;
+}
+
+.trash-item {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #8B4513;
+    animation: trash-fall 2s linear infinite;
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes rainfall {
+    0% { top: -20px; opacity: 0; }
+    10% { opacity: 1; }
+    100% { top: 100vh; opacity: 0; }
+}
+
+@keyframes lightning-strike {
+    0% { height: 0; opacity: 0; }
+    50% { height: 100vh; opacity: 1; }
+    100% { height: 100vh; opacity: 0; }
+}
+
+@keyframes trash-fall {
+    0% { 
+        top: -20px; 
+        transform: rotate(0deg); 
+        opacity: 1; 
+    }
+    100% { 
+        top: 100vh; 
+        transform: rotate(360deg); 
+        opacity: 0.3; 
+    }
+}
+
+@keyframes confetti-fall {
+    0% { 
+        top: -20px; 
+        transform: rotate(0deg); 
+        opacity: 1; 
+    }
+    100% { 
+        top: 100vh; 
+        transform: rotate(720deg); 
+        opacity: 0; 
+    }
+}
+
+.game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 28px;
+    text-align: center;
+    z-index: 300;
+    display: none;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid #00a2ff;
+    box-shadow: 0 0 30px rgba(0, 162, 255, 0.6);
+}
+
+.game-over h2 {
+    color: #ff6b6b;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+}
+
+.final-score {
+    color: #00ff88;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+}
+
+.controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #00a2ff;
+    font-size: 14px;
+    text-align: center;
+    opacity: 0.7;
+}
+
+.decoration {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00a2ff;
+    border-radius: 50%;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
