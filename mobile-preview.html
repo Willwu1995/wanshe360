@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>贪吃360 - 移动端预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 10px;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 0 0 2px rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .phone-header {
+            height: 44px;
+            background: rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .browser-controls {
+            position: absolute;
+            top: 44px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border-bottom: 1px solid #ddd;
+            z-index: 1000;
+        }
+
+        .address-bar {
+            flex: 1;
+            height: 28px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            padding: 0 10px;
+            font-size: 12px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        .device-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            z-index: 100;
+        }
+
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        .controls-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .control-btn {
+            display: block;
+            width: 120px;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .control-btn.secondary {
+            background: #6c757d;
+        }
+
+        .control-btn.secondary:hover {
+            background: #545b62;
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            z-index: 100;
+        }
+
+        .size-info {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+        }
+
+        /* 手机尺寸选择器 */
+        .size-selector {
+            margin-bottom: 15px;
+        }
+
+        .size-selector label {
+            display: block;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .size-selector select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .phone-mockup {
+                width: 320px;
+                height: 680px;
+            }
+            
+            .controls-panel {
+                position: static;
+                margin-top: 20px;
+            }
+            
+            body {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup" id="phoneMockup">
+        <div class="phone-header">
+            <span>iPhone 13 Pro</span>
+        </div>
+        
+        <div class="browser-controls">
+            <div class="address-bar">
+                <span>🌐 localhost:8000</span>
+            </div>
+        </div>
+        
+        <div class="device-info">
+            <div><strong>📱 设备信息</strong></div>
+            <div id="deviceSize">尺寸: 375×812</div>
+            <div>状态: 运行中</div>
+            <div>缩放: 100%</div>
+        </div>
+        
+        <iframe 
+            class="screen-content" 
+            id="screenContent"
+            src="http://localhost:8000"
+            title="贪吃360游戏预览"
+        ></iframe>
+        
+        <div class="status-indicator">
+            <span id="statusText">正在加载游戏...</span>
+        </div>
+    </div>
+    
+    <div class="controls-panel">
+        <div class="size-selector">
+            <label>选择设备尺寸:</label>
+            <select id="deviceSelect">
+                <option value="small">iPhone SE (320×568)</option>
+                <option value="medium" selected>iPhone 13 (375×812)</option>
+                <option value="large">iPhone 13 Pro Max (428×926)</option>
+                <option value="tablet">iPad Mini (768×1024)</option>
+                <option value="custom">自定义</option>
+            </select>
+        </div>
+        
+        <button class="control-btn" onclick="refreshGame()">🔄 刷新游戏</button>
+        <button class="control-btn" onclick="toggleFullscreen()">🖥️ 全屏预览</button>
+        <button class="control-btn secondary" onclick="toggleTouchMode()">👆 切换触摸模式</button>
+        <button class="control-btn secondary" onclick="showDebugInfo()">🔍 调试信息</button>
+        
+        <div class="size-info">
+            <div>当前视口: <span id="viewportSize">375×812</span></div>
+            <div>实际内容: <span id="contentSize">-</span></div>
+        </div>
+    </div>
+
+    <script>
+        let currentDevice = 'medium';
+        let touchMode = true;
+        
+        const deviceSizes = {
+            small: { width: 320, height: 568, name: 'iPhone SE' },
+            medium: { width: 375, height: 812, name: 'iPhone 13' },
+            large: { width: 428, height: 926, name: 'iPhone 13 Pro Max' },
+            tablet: { width: 768, height: 1024, name: 'iPad Mini' }
+        };
+        
+        // 设备选择器事件
+        document.getElementById('deviceSelect').addEventListener('change', function(e) {
+            const selectedValue = e.target.value;
+            if (selectedValue === 'custom') {
+                showCustomSizeDialog();
+            } else {
+                currentDevice = selectedValue;
+                updateDeviceSize();
+            }
+        });
+        
+        function updateDeviceSize() {
+            const size = deviceSizes[currentDevice];
+            const mockup = document.getElementById('phoneMockup');
+            const deviceSize = document.getElementById('deviceSize');
+            const viewportSize = document.getElementById('viewportSize');
+            
+            mockup.style.width = size.width + 'px';
+            mockup.style.height = size.height + 'px';
+            
+            deviceSize.textContent = `尺寸: ${size.width}×${size.height}`;
+            viewportSize.textContent = `${size.width}×${size.height}`;
+            
+            // 更新状态
+            updateStatus(`已切换到 ${size.name}`);
+        }
+        
+        function refreshGame() {
+            const iframe = document.getElementById('screenContent');
+            const statusText = document.getElementById('statusText');
+            
+            statusText.textContent = '正在刷新游戏...';
+            iframe.src = iframe.src;
+            
+            iframe.onload = function() {
+                statusText.textContent = '游戏加载完成';
+                setTimeout(() => {
+                    statusText.textContent = '游戏运行中';
+                }, 1000);
+            };
+        }
+        
+        function toggleFullscreen() {
+            const mockup = document.getElementById('phoneMockup');
+            if (!document.fullscreenElement) {
+                mockup.requestFullscreen().then(() => {
+                    updateStatus('已进入全屏模式');
+                }).catch(err => {
+                    updateStatus('全屏模式不可用');
+                });
+            } else {
+                document.exitFullscreen();
+                updateStatus('已退出全屏模式');
+            }
+        }
+        
+        function toggleTouchMode() {
+            touchMode = !touchMode;
+            const iframe = document.getElementById('screenContent');
+            
+            if (touchMode) {
+                iframe.style.pointerEvents = 'auto';
+                updateStatus('触摸模式已启用');
+            } else {
+                iframe.style.pointerEvents = 'none';
+                updateStatus('触摸模式已禁用');
+            }
+        }
+        
+        function showDebugInfo() {
+            const iframe = document.getElementById('screenContent');
+            try {
+                const contentWindow = iframe.contentWindow;
+                const info = `
+                    设备像素比: ${window.devicePixelRatio}
+                    屏幕宽度: ${screen.width}
+                    屏幕高度: ${screen.height}
+                    可用宽度: ${screen.availWidth}
+                    可用高度: ${screen.availHeight}
+                    触摸支持: ${'ontouchstart' in window}
+                `;
+                alert('调试信息:\n' + info);
+            } catch (e) {
+                alert('无法访问iframe内容 (跨域限制)');
+            }
+        }
+        
+        function showCustomSizeDialog() {
+            const width = prompt('请输入自定义宽度 (px):', '375');
+            const height = prompt('请输入自定义高度 (px):', '812');
+            
+            if (width && height) {
+                const mockup = document.getElementById('phoneMockup');
+                const deviceSize = document.getElementById('deviceSize');
+                const viewportSize = document.getElementById('viewportSize');
+                
+                mockup.style.width = width + 'px';
+                mockup.style.height = height + 'px';
+                
+                deviceSize.textContent = `尺寸: ${width}×${height} (自定义)`;
+                viewportSize.textContent = `${width}×${height}`;
+                
+                updateStatus('已切换到自定义尺寸');
+            }
+        }
+        
+        function updateStatus(message) {
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+            
+            setTimeout(() => {
+                statusText.textContent = '游戏运行中';
+            }, 2000);
+        }
+        
+        // 监听iframe加载事件
+        document.getElementById('screenContent').onload = function() {
+            updateStatus('游戏加载完成');
+            updateContentSize();
+        };
+        
+        function updateContentSize() {
+            try {
+                const iframe = document.getElementById('screenContent');
+                const contentSize = document.getElementById('contentSize');
+                const contentWindow = iframe.contentWindow;
+                
+                contentSize.textContent = `${contentWindow.innerWidth}×${contentWindow.innerHeight}`;
+            } catch (e) {
+                // 跨域限制，无法访问iframe内容
+                document.getElementById('contentSize').textContent = '不可用';
+            }
+        }
+        
+        // 监听窗口大小变化
+        window.addEventListener('resize', function() {
+            updateContentSize();
+        });
+        
+        // 初始化
+        updateStatus('正在加载游戏...');
+        
+        // 模拟触摸事件测试
+        let touchTestInterval;
+        function startTouchTest() {
+            const iframe = document.getElementById('screenContent');
+            let touchCount = 0;
+            
+            touchTestInterval = setInterval(() => {
+                if (touchCount < 5) {
+                    console.log(`模拟触摸事件 ${touchCount + 1}`);
+                    touchCount++;
+                } else {
+                    clearInterval(touchTestInterval);
+                }
+            }, 1000);
+        }
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        refreshGame();
+                        break;
+                    case 'f':
+                        e.preventDefault();
+                        toggleFullscreen();
+                        break;
+                }
+            }
+        });
+        
+        console.log('📱 移动端预览器已加载');
+        console.log('快捷键: Ctrl+R (刷新), Ctrl+F (全屏)');
+    </script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端效果预览 - 无需服务器</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .device {
+            background: #2c3e50;
+            border-radius: 20px;
+            padding: 15px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .device-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .device-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .device-size {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .device-screen {
+            background: #1a1a1a;
+            border-radius: 15px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .game-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00a2ff, #00ff88, #ff6b6b, #ffaa00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .game-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            background: rgba(0, 162, 255, 0.2);
+            padding: 8px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        
+        .info-label {
+            display: block;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            font-weight: bold;
+            color: #00ff88;
+        }
+        
+        .game-area {
+            width: 200px;
+            height: 150px;
+            background: #0a0a0a;
+            border: 2px solid #00a2ff;
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .game-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 162, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 162, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .snake {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #00a2ff;
+            border: 1px solid #0066cc;
+            border-radius: 3px;
+        }
+        
+        .snake-head {
+            background: #ff6b6b;
+            border-color: #ff4444;
+        }
+        
+        .food {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #00ff88;
+            border: 1px solid #00cc66;
+            border-radius: 3px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .dpad {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+        
+        .dpad-btn {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: rgba(0, 162, 255, 0.8);
+            border: 1px solid #00a2ff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        .dpad-btn.up { top: 0; left: 21px; }
+        .dpad-btn.left { top: 21px; left: 0; }
+        .dpad-btn.right { top: 21px; right: 0; }
+        .dpad-btn.down { bottom: 0; left: 21px; }
+        
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 107, 107, 0.8);
+            border: 1px solid #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .features {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            color: white;
+        }
+        
+        .features h3 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .features ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .features li {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        
+        .features li::before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .server-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007aff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        @media (max-width: 768px) {
+            .device-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="color: white; margin-bottom: 10px;">📱 贪吃360 移动端优化效果</h1>
+            <p style="opacity: 0.9;">无需服务器即可预览移动端优化效果</p>
+        </div>
+        
+        <div class="server-info">
+            <div>🎮 游戏服务器状态: <span id="serverStatus">检查中...</span></div>
+            <div style="margin-top: 10px;">
+                <a href="http://localhost:8000" class="btn" target="_blank">直接访问游戏</a>
+                <a href="mobile-demo.html" class="btn" target="_blank">完整演示</a>
+            </div>
+        </div>
+        
+        <div class="device-grid">
+            <!-- iPhone SE -->
+            <div class="device">
+                <div class="device-header">
+                    <div class="device-name">iPhone SE</div>
+                    <div class="device-size">320×568 - 超小屏幕</div>
+                </div>
+                <div class="device-screen">
+                    <div class="game-title">360</div>
+                    <div class="game-info">
+                        <div class="info-item">
+                            <span class="info-label">分数</span>
+                            <span class="info-value">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">等级</span>
+                            <span class="info-value">1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">时间</span>
+                            <span class="info-value">00:00</span>
+                        </div>
+                    </div>
+                    <div class="game-area">
+                        <div class="game-grid"></div>
+                        <div class="snake snake-head" style="top: 60px; left: 90px;"></div>
+                        <div class="snake" style="top: 60px; left: 70px;"></div>
+                        <div class="snake" style="top: 60px; left: 50px;"></div>
+                        <div class="food" style="top: 120px; left: 130px;"></div>
+                    </div>
+                    <div class="controls">
+                        <div class="dpad">
+                            <div class="dpad-btn up">↑</div>
+                            <div class="dpad-btn left">←</div>
+                            <div class="dpad-btn right">→</div>
+                            <div class="dpad-btn down">↓</div>
+                        </div>
+                        <div>
+                            <div class="action-btn">🔊</div>
+                            <div class="action-btn">⚡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- iPhone 13 -->
+            <div class="device">
+                <div class="device-header">
+                    <div class="device-name">iPhone 13</div>
+                    <div class="device-size">375×812 - 标准屏幕</div>
+                </div>
+                <div class="device-screen">
+                    <div class="game-title">360</div>
+                    <div class="game-info">
+                        <div class="info-item">
+                            <span class="info-label">分数</span>
+                            <span class="info-value">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">等级</span>
+                            <span class="info-value">1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">时间</span>
+                            <span class="info-value">00:00</span>
+                        </div>
+                    </div>
+                    <div class="game-area">
+                        <div class="game-grid"></div>
+                        <div class="snake snake-head" style="top: 60px; left: 90px;"></div>
+                        <div class="snake" style="top: 60px; left: 70px;"></div>
+                        <div class="snake" style="top: 60px; left: 50px;"></div>
+                        <div class="food" style="top: 120px; left: 130px;"></div>
+                    </div>
+                    <div class="controls">
+                        <div class="dpad">
+                            <div class="dpad-btn up">↑</div>
+                            <div class="dpad-btn left">←</div>
+                            <div class="dpad-btn right">→</div>
+                            <div class="dpad-btn down">↓</div>
+                        </div>
+                        <div>
+                            <div class="action-btn">🔊</div>
+                            <div class="action-btn">⚡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- iPhone 13 Pro Max -->
+            <div class="device">
+                <div class="device-header">
+                    <div class="device-name">iPhone 13 Pro Max</div>
+                    <div class="device-size">428×926 - 大屏幕</div>
+                </div>
+                <div class="device-screen">
+                    <div class="game-title">360</div>
+                    <div class="game-info">
+                        <div class="info-item">
+                            <span class="info-label">分数</span>
+                            <span class="info-value">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">等级</span>
+                            <span class="info-value">1</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">时间</span>
+                            <span class="info-value">00:00</span>
+                        </div>
+                    </div>
+                    <div class="game-area">
+                        <div class="game-grid"></div>
+                        <div class="snake snake-head" style="top: 60px; left: 90px;"></div>
+                        <div class="snake" style="top: 60px; left: 70px;"></div>
+                        <div class="snake" style="top: 60px; left: 50px;"></div>
+                        <div class="food" style="top: 120px; left: 130px;"></div>
+                    </div>
+                    <div class="controls">
+                        <div class="dpad">
+                            <div class="dpad-btn up">↑</div>
+                            <div class="dpad-btn left">←</div>
+                            <div class="dpad-btn right">→</div>
+                            <div class="dpad-btn down">↓</div>
+                        </div>
+                        <div>
+                            <div class="action-btn">🔊</div>
+                            <div class="action-btn">⚡</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h3>🚀 移动端优化特性</h3>
+            <ul>
+                <li>响应式画布尺寸，根据屏幕自动调整</li>
+                <li>触摸控制按钮自适应大小</li>
+                <li>游戏信息面板智能重排</li>
+                <li>字体大小动态适配</li>
+                <li>防止意外缩放和误触</li>
+                <li>优化的移动端性能</li>
+                <li>支持横屏和竖屏模式</li>
+                <li>兼容iOS和Android系统</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // 检查服务器状态
+        function checkServerStatus() {
+            const statusElement = document.getElementById('serverStatus');
+            
+            fetch('http://localhost:8000', { 
+                method: 'HEAD',
+                mode: 'no-cors'
+            })
+            .then(() => {
+                statusElement.innerHTML = '<span style="color: #4CAF50;">✅ 在线</span>';
+            })
+            .catch(() => {
+                statusElement.innerHTML = '<span style="color: #ff6b6b;">❌ 离线</span> (运行: python3 -m http.server 8000)';
+            });
+        }
+        
+        // 模拟游戏数据更新
+        function simulateGameUpdate() {
+            setInterval(() => {
+                const infoValues = document.querySelectorAll('.info-value');
+                
+                // 随机更新分数
+                if (Math.random() > 0.9) {
+                    const currentScore = parseInt(infoValues[0].textContent);
+                    infoValues[0].textContent = currentScore + 10;
+                }
+            }, 3000);
+        }
+        
+        // 页面加载后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkServerStatus();
+            simulateGameUpdate();
+            
+            // 每30秒检查一次服务器状态
+            setInterval(checkServerStatus, 30000);
+        });
+    </script>
+</body>
+</html>

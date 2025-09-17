@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多设备预览 - 贪吃360移动端优化</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .devices-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .device-frame {
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 
+                0 20px 40px rgba(0,0,0,0.3),
+                inset 0 0 0 2px rgba(255,255,255,0.1);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .device-frame:hover {
+            transform: translateY(-5px);
+        }
+
+        .device-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .device-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .device-specs {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .device-screen {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .device-iphone-se {
+            width: 320px;
+            height: 568px;
+        }
+
+        .device-iphone-13 {
+            width: 375px;
+            height: 812px;
+        }
+
+        .device-iphone-pro {
+            width: 428px;
+            height: 926px;
+        }
+
+        .device-ipad {
+            width: 768px;
+            height: 1024px;
+        }
+
+        .screen-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .device-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .device-frame:hover .device-overlay {
+            opacity: 1;
+        }
+
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007aff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .controls-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 200px;
+        }
+
+        .control-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .control-btn.secondary {
+            background: #6c757d;
+        }
+
+        .control-btn.secondary:hover {
+            background: #545b62;
+        }
+
+        .status-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .feature-list {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+        }
+
+        .feature-list h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .feature-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .devices-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .controls-panel {
+                position: static;
+                margin-top: 20px;
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📱 贪吃360 移动端优化预览</h1>
+        <p>查看游戏在各种移动设备上的显示效果</p>
+    </div>
+
+    <div class="devices-container">
+        <!-- iPhone SE -->
+        <div class="device-frame device-iphone-se">
+            <div class="device-header">
+                <div class="device-name">iPhone SE</div>
+                <div class="device-specs">320×568 | 小屏幕</div>
+            </div>
+            <div class="device-screen">
+                <iframe class="screen-content" src="http://localhost:8000" title="iPhone SE 预览"></iframe>
+                <div class="loading-indicator" id="loading-se">
+                    <div class="loading-spinner"></div>
+                    <div>加载中...</div>
+                </div>
+                <div class="device-overlay">
+                    <div><strong>iPhone SE (320×568)</strong></div>
+                    <div>• 超小屏幕优化</div>
+                    <div>• 紧凑布局</div>
+                    <div>• 触摸控制适配</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- iPhone 13 -->
+        <div class="device-frame device-iphone-13">
+            <div class="device-header">
+                <div class="device-name">iPhone 13</div>
+                <div class="device-specs">375×812 | 标准屏幕</div>
+            </div>
+            <div class="device-screen">
+                <iframe class="screen-content" src="http://localhost:8000" title="iPhone 13 预览"></iframe>
+                <div class="loading-indicator" id="loading-13">
+                    <div class="loading-spinner"></div>
+                    <div>加载中...</div>
+                </div>
+                <div class="device-overlay">
+                    <div><strong>iPhone 13 (375×812)</strong></div>
+                    <div>• 标准移动端布局</div>
+                    <div>• 响应式设计</div>
+                    <div>• 优化触摸区域</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- iPhone 13 Pro Max -->
+        <div class="device-frame device-iphone-pro">
+            <div class="device-header">
+                <div class="device-name">iPhone 13 Pro Max</div>
+                <div class="device-specs">428×926 | 大屏幕</div>
+            </div>
+            <div class="device-screen">
+                <iframe class="screen-content" src="http://localhost:8000" title="iPhone 13 Pro Max 预览"></iframe>
+                <div class="loading-indicator" id="loading-pro">
+                    <div class="loading-spinner"></div>
+                    <div>加载中...</div>
+                </div>
+                <div class="device-overlay">
+                    <div><strong>iPhone 13 Pro Max (428×926)</strong></div>
+                    <div>• 大屏幕优化</div>
+                    <div>• 增强游戏体验</div>
+                    <div>• 更大控制按钮</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- iPad Mini -->
+        <div class="device-frame device-ipad">
+            <div class="device-header">
+                <div class="device-name">iPad Mini</div>
+                <div class="device-specs">768×1024 | 平板</div>
+            </div>
+            <div class="device-screen">
+                <iframe class="screen-content" src="http://localhost:8000" title="iPad Mini 预览"></iframe>
+                <div class="loading-indicator" id="loading-ipad">
+                    <div class="loading-spinner"></div>
+                    <div>加载中...</div>
+                </div>
+                <div class="device-overlay">
+                    <div><strong>iPad Mini (768×1024)</strong></div>
+                    <div>• 平板端布局</div>
+                    <div>• 桌面端特性</div>
+                    <div>• 侧边控制面板</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-panel">
+        <h3>🎮 控制面板</h3>
+        <button class="control-btn" onclick="refreshAllDevices()">🔄 刷新所有设备</button>
+        <button class="control-btn" onclick="syncAllDevices()">📱 同步游戏状态</button>
+        <button class="control-btn secondary" onclick="toggleAutoRefresh()">⏰ 自动刷新</button>
+        <button class="control-btn secondary" onclick="exportResults()">📊 导出测试结果</button>
+        
+        <div class="status-info">
+            <div><strong>测试状态:</strong></div>
+            <div id="testStatus">正在初始化...</div>
+            <div id="deviceCount">设备: 4台</div>
+            <div id="loadTime">加载时间: --</div>
+        </div>
+    </div>
+
+    <div class="feature-list">
+        <h3>🚀 移动端优化特性</h3>
+        <ul>
+            <li>响应式画布尺寸，根据屏幕自动调整</li>
+            <li>触摸控制按钮自适应大小</li>
+            <li>游戏信息面板智能重排</li>
+            <li>字体大小动态适配</li>
+            <li>防止意外缩放和误触</li>
+            <li>优化的移动端性能</li>
+            <li>支持横屏和竖屏模式</li>
+            <li>兼容iOS和Android系统</li>
+        </ul>
+    </div>
+
+    <script>
+        let autoRefreshInterval;
+        let autoRefreshEnabled = false;
+        let startTime = Date.now();
+        
+        // 监听所有iframe加载事件
+        document.querySelectorAll('iframe').forEach((iframe, index) => {
+            iframe.addEventListener('load', function() {
+                const loadingId = iframe.parentElement.querySelector('.loading-indicator');
+                if (loadingId) {
+                    loadingId.style.display = 'none';
+                }
+                
+                // 更新测试状态
+                updateTestStatus();
+                
+                // 模拟触摸事件测试
+                setTimeout(() => {
+                    simulateTouchTest(iframe);
+                }, 2000);
+            });
+        });
+        
+        function updateTestStatus() {
+            const totalDevices = document.querySelectorAll('iframe').length;
+            const loadedDevices = Array.from(document.querySelectorAll('iframe')).filter(iframe => {
+                try {
+                    return iframe.contentWindow.document.readyState === 'complete';
+                } catch (e) {
+                    return false;
+                }
+            }).length;
+            
+            const loadTime = ((Date.now() - startTime) / 1000).toFixed(1);
+            
+            document.getElementById('testStatus').textContent = `${loadedDevices}/${totalDevices} 设备已加载`;
+            document.getElementById('loadTime').textContent = `加载时间: ${loadTime}s`;
+            
+            if (loadedDevices === totalDevices) {
+                document.getElementById('testStatus').textContent = '所有设备加载完成 ✅';
+            }
+        }
+        
+        function refreshAllDevices() {
+            document.querySelectorAll('iframe').forEach((iframe, index) => {
+                const loadingId = iframe.parentElement.querySelector('.loading-indicator');
+                if (loadingId) {
+                    loadingId.style.display = 'block';
+                }
+                
+                setTimeout(() => {
+                    iframe.src = iframe.src;
+                }, index * 200); // 错开刷新时间避免服务器压力
+            });
+            
+            startTime = Date.now();
+            updateTestStatus();
+        }
+        
+        function syncAllDevices() {
+            console.log('🔄 同步所有设备游戏状态...');
+            
+            // 这里可以添加同步游戏状态的逻辑
+            alert('🔄 设备同步功能\n\n在实际应用中，这里会同步所有设备的游戏状态，包括：\n• 游戏分数\n• 游戏等级\n• 设置选项\n• 游戏进度');
+        }
+        
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+            
+            if (autoRefreshEnabled) {
+                autoRefreshInterval = setInterval(() => {
+                    refreshAllDevices();
+                }, 30000); // 每30秒刷新一次
+                
+                alert('⏰ 自动刷新已启用\n每30秒自动刷新所有设备');
+            } else {
+                clearInterval(autoRefreshInterval);
+                alert('⏰ 自动刷新已禁用');
+            }
+        }
+        
+        function exportResults() {
+            const results = {
+                testDate: new Date().toISOString(),
+                devices: [
+                    { name: 'iPhone SE', size: '320×568', status: '测试中' },
+                    { name: 'iPhone 13', size: '375×812', status: '测试中' },
+                    { name: 'iPhone 13 Pro Max', size: '428×926', status: '测试中' },
+                    { name: 'iPad Mini', size: '768×1024', status: '测试中' }
+                ],
+                optimizations: [
+                    '响应式布局',
+                    '触摸控制优化',
+                    '字体大小适配',
+                    '性能优化',
+                    '跨平台兼容'
+                ]
+            };
+            
+            const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mobile-test-results.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('📊 测试结果已导出');
+        }
+        
+        function simulateTouchTest(iframe) {
+            try {
+                const contentWindow = iframe.contentWindow;
+                
+                // 模拟触摸事件
+                const touchEvents = ['touchstart', 'touchend'];
+                touchEvents.forEach(eventType => {
+                    const touchEvent = new Event(eventType, {
+                        bubbles: true,
+                        cancelable: true
+                    });
+                    contentWindow.dispatchEvent(touchEvent);
+                });
+                
+                console.log(`👆 模拟触摸测试完成: ${iframe.title}`);
+            } catch (e) {
+                console.log(`⚠️ 无法模拟触摸事件 (跨域限制): ${iframe.title}`);
+            }
+        }
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        refreshAllDevices();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        syncAllDevices();
+                        break;
+                }
+            }
+        });
+        
+        // 定期更新状态
+        setInterval(updateTestStatus, 1000);
+        
+        console.log('📱 多设备预览器已加载');
+        console.log('快捷键: Ctrl+R (刷新), Ctrl+S (同步)');
+        
+        // 页面卸载时清理
+        window.addEventListener('beforeunload', function() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>

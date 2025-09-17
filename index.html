@@ -241,7 +241,7 @@
         /* 游戏信息面板 */
         .game-info {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(clamp(60px, 15vw, 80px), 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
             gap: clamp(4px, 1vw, 8px);
             margin-bottom: clamp(10px, 2vw, 15px);
             padding: clamp(8px, 1.5vw, 12px);
@@ -249,6 +249,18 @@
             border: 1px solid rgba(0, 162, 255, 0.3);
             border-radius: clamp(8px, 2vw, 12px);
             font-size: clamp(8px, 2vw, 12px);
+        }
+        
+        @media (max-width: 480px) {
+            .game-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 481px) and (max-width: 767px) {
+            .game-info {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         
         .info-item {
@@ -1257,6 +1269,8 @@
         const soundToggle = document.getElementById('soundToggle');
         const soundToggleBtn = document.getElementById('soundToggleBtn');
         
+        const gridSize = 20;
+        
         // 响应式画布设置
         function setupCanvas() {
             const isMobile = window.innerWidth <= 767;
@@ -1285,8 +1299,6 @@
         }
         
         setupCanvas();
-        
-        const gridSize = 20;
         let tileCountX = canvas.width / gridSize;
         let tileCountY = canvas.height / gridSize;
         
@@ -1342,8 +1354,12 @@
         }
         
         function initializeGame() {
+            // 根据画布大小设置合适的初始位置
+            const startX = Math.floor(tileCountX / 4);
+            const startY = Math.floor(tileCountY / 2);
+            
             snake = [
-                {x: 10, y: 10, type: 'head', char: '360'}
+                {x: startX, y: startY, type: 'head', char: '360'}
             ];
             dx = 0;
             dy = 0;
@@ -1524,7 +1540,7 @@
                 if (segment.char) {
                     ctx.fillStyle = '#ffffff';
                     const fontSize = Math.max(8, Math.min(12, gridSize * 0.5));
-                    ctx.font = `${fontSize}px "Press Start 2P"`;
+                    ctx.font = `bold ${fontSize}px "Courier New", monospace`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(segment.char, 
@@ -1542,7 +1558,7 @@
             // 绘制食物文字（3、6、0）
             ctx.fillStyle = '#ffffff';
             const foodFontSize = Math.max(8, Math.min(12, gridSize * 0.5));
-            ctx.font = `${foodFontSize}px "Press Start 2P"`;
+            ctx.font = `bold ${foodFontSize}px "Courier New", monospace`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(foodChar, foodX * gridSize + gridSize/2, foodY * gridSize + gridSize/2);
@@ -1559,7 +1575,7 @@
                 // 绘制特殊字符
                 ctx.fillStyle = '#ffffff';
                 const specialFontSize = Math.max(8, Math.min(12, gridSize * 0.5));
-                ctx.font = `${specialFontSize}px "Press Start 2P"`;
+                ctx.font = `bold ${specialFontSize}px "Courier New", monospace`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(specialFood.char, 
