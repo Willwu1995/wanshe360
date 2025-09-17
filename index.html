@@ -2,7 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="description" content="贪吃360 - 一款基于经典贪吃蛇游戏的360风格变体，具有马赛克图形效果和东南亚搏击音效">
     <meta name="keywords" content="贪吃蛇, 360, 马赛克游戏, 网页游戏, HTML5游戏">
     <meta name="author" content="贪吃360开发团队">
@@ -73,37 +75,42 @@
         .main-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: clamp(10px, 2vw, 15px);
             align-items: center;
-            padding: 10px;
+            padding: clamp(5px, 2vw, 10px);
             max-width: 100vw;
             width: 100%;
+            min-height: 100vh;
+            justify-content: center;
         }
         
         /* 游戏容器 */
         .game-container {
             position: relative;
             background: var(--medium-bg);
-            border: 3px solid var(--primary-color);
-            border-radius: 20px;
-            padding: 15px;
+            border: clamp(2px, 0.5vw, 3px) solid var(--primary-color);
+            border-radius: clamp(15px, 3vw, 20px);
+            padding: clamp(10px, 2vw, 15px);
             box-shadow: 
-                0 0 30px rgba(0, 162, 255, 0.6),
-                inset 0 0 15px rgba(0, 162, 255, 0.1);
+                0 0 clamp(20px, 3vw, 30px) rgba(0, 162, 255, 0.6),
+                inset 0 0 clamp(10px, 2vw, 15px) rgba(0, 162, 255, 0.1);
             backdrop-filter: blur(10px);
             max-width: 95vw;
             width: 100%;
+            box-sizing: border-box;
         }
         
         /* 游戏画布 */
         #gameCanvas {
-            border: 2px solid var(--secondary-color);
-            border-radius: 15px;
+            border: clamp(1px, 0.3vw, 2px) solid var(--secondary-color);
+            border-radius: clamp(10px, 2vw, 15px);
             background: var(--dark-bg);
             max-width: 100%;
             height: auto;
             display: block;
             margin: 0 auto;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         
         /* 启动界面 */
@@ -234,14 +241,14 @@
         /* 游戏信息面板 */
         .game-info {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 8px;
-            margin-bottom: 15px;
-            padding: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(60px, 15vw, 80px), 1fr));
+            gap: clamp(4px, 1vw, 8px);
+            margin-bottom: clamp(10px, 2vw, 15px);
+            padding: clamp(8px, 1.5vw, 12px);
             background: rgba(0, 162, 255, 0.1);
             border: 1px solid rgba(0, 162, 255, 0.3);
-            border-radius: 12px;
-            font-size: clamp(10px, 2.5vw, 12px);
+            border-radius: clamp(8px, 2vw, 12px);
+            font-size: clamp(8px, 2vw, 12px);
         }
         
         .info-item {
@@ -253,8 +260,8 @@
         
         .info-item span {
             display: block;
-            font-size: clamp(14px, 3vw, 16px);
-            margin-top: 2px;
+            font-size: clamp(10px, 2.5vw, 16px);
+            margin-top: clamp(1px, 0.5vw, 2px);
         }
         
         /* 侧边控制面板 */
@@ -424,30 +431,31 @@
         /* 移动端触摸控制 */
         .mobile-controls {
             position: fixed;
-            bottom: 20px;
+            bottom: clamp(10px, 2vw, 20px);
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 15px;
+            gap: clamp(8px, 2vw, 15px);
             z-index: 1000;
             opacity: 0.9;
+            padding: 0 clamp(5px, 1vw, 10px);
         }
         
         .mobile-dpad {
             position: relative;
-            width: 150px;
-            height: 150px;
+            width: clamp(100px, 20vw, 150px);
+            height: clamp(100px, 20vw, 150px);
         }
         
         .mobile-dpad-btn {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: clamp(35px, 7vw, 50px);
+            height: clamp(35px, 7vw, 50px);
             background: rgba(0, 162, 255, 0.8);
-            border: 2px solid var(--primary-color);
-            border-radius: 12px;
+            border: clamp(1px, 0.3vw, 2px) solid var(--primary-color);
+            border-radius: clamp(8px, 2vw, 12px);
             color: white;
-            font-size: 20px;
+            font-size: clamp(14px, 3vw, 20px);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.1s ease;
@@ -455,6 +463,9 @@
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(10px);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
         }
         
         .mobile-dpad-btn:active {
@@ -462,25 +473,43 @@
             background: var(--primary-color);
         }
         
-        .mobile-dpad-btn.up { top: 0; left: 50px; }
-        .mobile-dpad-btn.left { top: 50px; left: 0; }
-        .mobile-dpad-btn.right { top: 50px; left: 100px; }
-        .mobile-dpad-btn.down { top: 100px; left: 50px; }
+        .mobile-dpad-btn.up { 
+            top: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
+        .mobile-dpad-btn.left { 
+            top: 50%; 
+            left: 0; 
+            transform: translateY(-50%); 
+        }
+        .mobile-dpad-btn.right { 
+            top: 50%; 
+            right: 0; 
+            left: auto; 
+            transform: translateY(-50%); 
+        }
+        .mobile-dpad-btn.down { 
+            bottom: 0; 
+            top: auto; 
+            left: 50%; 
+            transform: translateX(-50%); 
+        }
         
         .mobile-actions {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: clamp(6px, 1.5vw, 10px);
         }
         
         .mobile-action-btn {
-            width: 60px;
-            height: 60px;
+            width: clamp(40px, 8vw, 60px);
+            height: clamp(40px, 8vw, 60px);
             background: rgba(255, 107, 107, 0.8);
-            border: 2px solid var(--accent-color);
+            border: clamp(1px, 0.3vw, 2px) solid var(--accent-color);
             border-radius: 50%;
             color: white;
-            font-size: 16px;
+            font-size: clamp(12px, 3vw, 16px);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.1s ease;
@@ -488,6 +517,9 @@
             align-items: center;
             justify-content: center;
             backdrop-filter: blur(10px);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
         }
         
         .mobile-action-btn:active {
@@ -500,10 +532,12 @@
             .main-container {
                 flex-direction: row;
                 align-items: flex-start;
+                padding: 15px;
             }
             
             .side-panel {
                 display: flex;
+                max-width: 300px;
             }
             
             .mobile-controls {
@@ -516,6 +550,7 @@
             
             .game-container {
                 max-width: 800px;
+                flex: 1;
             }
             
             #gameCanvas {
@@ -531,6 +566,70 @@
             
             .controls-hint {
                 display: none;
+            }
+            
+            .main-container {
+                padding: 5px;
+            }
+            
+            .game-info {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .info-item:nth-child(4),
+            .info-item:nth-child(5) {
+                grid-column: span 1;
+            }
+        }
+        
+        /* 超小屏幕优化 */
+        @media (max-width: 480px) {
+            .logo {
+                font-size: clamp(36px, 8vw, 48px);
+            }
+            
+            .logo-subtitle {
+                font-size: clamp(10px, 2.5vw, 14px);
+            }
+            
+            .start-button {
+                width: 180px;
+                max-width: 70vw;
+                padding: 10px 20px;
+                font-size: 11px;
+            }
+            
+            .game-info {
+                grid-template-columns: repeat(2, 1fr);
+                font-size: clamp(7px, 1.8vw, 10px);
+                padding: 6px;
+                gap: 3px;
+            }
+            
+            .info-item span {
+                font-size: clamp(8px, 2vw, 12px);
+            }
+            
+            .mobile-controls {
+                gap: clamp(5px, 1.5vw, 8px);
+                bottom: clamp(5px, 1.5vw, 10px);
+            }
+            
+            .mobile-dpad {
+                width: clamp(80px, 18vw, 120px);
+                height: clamp(80px, 18vw, 120px);
+            }
+            
+            .mobile-dpad-btn {
+                width: clamp(25px, 6vw, 35px);
+                height: clamp(25px, 6vw, 35px);
+                font-size: clamp(10px, 2.5vw, 14px);
+            }
+            
+            .mobile-action-btn {
+                width: clamp(35px, 7vw, 50px);
+                height: clamp(35px, 7vw, 50px);
+                font-size: clamp(10px, 2.5vw, 14px);
             }
         }
         
@@ -1161,18 +1260,28 @@
         // 响应式画布设置
         function setupCanvas() {
             const isMobile = window.innerWidth <= 767;
+            const isSmallScreen = window.innerWidth <= 480;
             const container = canvas.parentElement;
-            const maxWidth = container.clientWidth - 40; // 减去padding
+            const containerWidth = container.clientWidth;
+            const availableWidth = containerWidth - (isMobile ? 20 : 40); // 减去padding
             
-            if (isMobile) {
-                // 移动端使用较小的画布
-                canvas.width = Math.min(maxWidth, 600);
-                canvas.height = Math.min(maxWidth * 0.75, 450);
+            if (isSmallScreen) {
+                // 超小屏幕
+                canvas.width = Math.min(availableWidth, 320);
+                canvas.height = Math.min(availableWidth * 0.75, 240);
+            } else if (isMobile) {
+                // 普通移动端
+                canvas.width = Math.min(availableWidth, 500);
+                canvas.height = Math.min(availableWidth * 0.75, 375);
             } else {
-                // 桌面端使用标准尺寸
+                // 桌面端
                 canvas.width = 800;
                 canvas.height = 600;
             }
+            
+            // 确保画布尺寸是gridSize的倍数
+            canvas.width = Math.floor(canvas.width / gridSize) * gridSize;
+            canvas.height = Math.floor(canvas.height / gridSize) * gridSize;
         }
         
         setupCanvas();
@@ -1414,7 +1523,8 @@
                 // 绘制文字
                 if (segment.char) {
                     ctx.fillStyle = '#ffffff';
-                    ctx.font = '10px "Press Start 2P"';
+                    const fontSize = Math.max(8, Math.min(12, gridSize * 0.5));
+                    ctx.font = `${fontSize}px "Press Start 2P"`;
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(segment.char, 
@@ -1431,7 +1541,8 @@
             
             // 绘制食物文字（3、6、0）
             ctx.fillStyle = '#ffffff';
-            ctx.font = '10px "Press Start 2P"';
+            const foodFontSize = Math.max(8, Math.min(12, gridSize * 0.5));
+            ctx.font = `${foodFontSize}px "Press Start 2P"`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText(foodChar, foodX * gridSize + gridSize/2, foodY * gridSize + gridSize/2);
@@ -1447,7 +1558,8 @@
                 
                 // 绘制特殊字符
                 ctx.fillStyle = '#ffffff';
-                ctx.font = '10px "Press Start 2P"';
+                const specialFontSize = Math.max(8, Math.min(12, gridSize * 0.5));
+                ctx.font = `${specialFontSize}px "Press Start 2P"`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(specialFood.char, 
@@ -1763,6 +1875,32 @@
         
         // 初始化排行榜显示
         leaderboardSystem.display();
+        
+        // 防止双击缩放和改善触摸体验
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        document.addEventListener('touchend', function(e) {
+            const now = Date.now();
+            const lastTouch = document.lastTouchEnd || 0;
+            const timeSince = now - lastTouch;
+            
+            if (timeSince < 300 && e.target.closest('.mobile-dpad-btn, .mobile-action-btn')) {
+                e.preventDefault();
+            }
+            
+            document.lastTouchEnd = now;
+        }, { passive: false });
+        
+        // 防止默认的触摸行为
+        document.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.mobile-controls')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     </script>
 </body>
 </html>
