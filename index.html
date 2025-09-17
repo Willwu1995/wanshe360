@@ -470,13 +470,13 @@
         
         .mobile-dpad-btn {
             position: absolute;
-            width: clamp(50px, 10vw, 65px);
-            height: clamp(50px, 10vw, 65px);
+            width: clamp(70px, 14vw, 90px);
+            height: clamp(70px, 14vw, 90px);
             background: rgba(0, 162, 255, 0.9);
-            border: clamp(2px, 0.5vw, 3px) solid var(--primary-color);
-            border-radius: clamp(12px, 3vw, 15px);
+            border: clamp(3px, 0.8vw, 4px) solid var(--primary-color);
+            border-radius: clamp(15px, 4vw, 20px);
             color: white;
-            font-size: clamp(18px, 4vw, 24px);
+            font-size: clamp(24px, 5vw, 32px);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.15s ease;
@@ -487,7 +487,7 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            box-shadow: 0 4px 15px rgba(0, 162, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 162, 255, 0.6);
         }
         
         .mobile-dpad-btn:active {
@@ -534,13 +534,13 @@
         }
         
         .mobile-action-btn {
-            width: clamp(45px, 9vw, 65px);
-            height: clamp(45px, 9vw, 65px);
+            width: clamp(65px, 12vw, 85px);
+            height: clamp(65px, 12vw, 85px);
             background: rgba(255, 107, 107, 0.9);
-            border: clamp(2px, 0.5vw, 3px) solid var(--accent-color);
+            border: clamp(3px, 0.8vw, 4px) solid var(--accent-color);
             border-radius: 50%;
             color: white;
-            font-size: clamp(16px, 3.5vw, 20px);
+            font-size: clamp(24px, 4.5vw, 30px);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.15s ease;
@@ -551,17 +551,17 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
         }
         
         .mobile-speed-btn {
-            width: clamp(35px, 7vw, 45px);
-            height: clamp(35px, 7vw, 45px);
+            width: clamp(45px, 8vw, 60px);
+            height: clamp(45px, 8vw, 60px);
             background: rgba(0, 162, 255, 0.8);
-            border: clamp(1px, 0.3vw, 2px) solid var(--primary-color);
-            border-radius: clamp(8px, 2vw, 12px);
+            border: clamp(2px, 0.5vw, 3px) solid var(--primary-color);
+            border-radius: clamp(10px, 2.5vw, 15px);
             color: white;
-            font-size: clamp(10px, 2.5vw, 14px);
+            font-size: clamp(14px, 3vw, 18px);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.15s ease;
@@ -572,7 +572,7 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            box-shadow: 0 3px 12px rgba(0, 162, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 162, 255, 0.4);
         }
         
         .mobile-speed-btn.active {
@@ -629,6 +629,18 @@
             
             .main-container {
                 padding: 5px;
+            }
+            
+            .game-container {
+                max-width: 100%;
+                flex: 1;
+            }
+            
+            #gameCanvas {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin: 0 auto;
             }
             
             .game-info {
@@ -1346,12 +1358,12 @@
             
             if (isSmallScreen) {
                 // 超小屏幕
-                canvas.width = Math.min(availableWidth, 320);
-                canvas.height = Math.min(availableWidth * 0.75, 240);
+                canvas.width = Math.min(availableWidth, 400);
+                canvas.height = Math.min(availableWidth * 0.75, 300);
             } else if (isMobile) {
                 // 普通移动端
-                canvas.width = Math.min(availableWidth, 500);
-                canvas.height = Math.min(availableWidth * 0.75, 375);
+                canvas.width = Math.min(availableWidth, 600);
+                canvas.height = Math.min(availableWidth * 0.75, 450);
             } else {
                 // 桌面端
                 canvas.width = 800;
@@ -1958,6 +1970,13 @@
             soundToggle.textContent = `音效: ${enabled ? '开' : '关'}`;
             soundToggleBtn.textContent = enabled ? '🔊 音效开启' : '🔇 音效关闭';
             soundToggleBtn.classList.toggle('muted', !enabled);
+            
+            // 更新移动端音效按钮状态
+            const mobileSoundBtn = document.getElementById('mobileSoundBtn');
+            if (mobileSoundBtn) {
+                mobileSoundBtn.textContent = enabled ? '🔊' : '🔇';
+                mobileSoundBtn.style.background = enabled ? 'rgba(255, 107, 107, 0.9)' : 'rgba(128, 128, 128, 0.7)';
+            }
         }
         
         // 键盘控制
